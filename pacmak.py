@@ -25,6 +25,9 @@ elif syncmode:
     stdout = subprocess.run(getpackages_command, stdout=subprocess.PIPE, stderr=subprocess.STDOUT).stdout
     packages = stdout.split()
     
+    src_command = ["sudo", "su", "&&", "mkdir", "-p", "/usr/local/src/pacmak", "&&", "cd", "/usr/local/src/pacmak"]
+    print(subprocess.run(src_command, stdout=subprocess.PIPE, stderr=subprocess.STDOUT).stdout)
+
     if artixmode:
         asp_packages = []
         for pack in packages:
@@ -41,6 +44,8 @@ elif syncmode:
         asp_command = ["asp", "export"] + packages
         print(subprocess.run(asp_command, stdout=subprocess.PIPE, stderr=subprocess.STDOUT).stdout)
     
+    print(subprocess.run("exit", stdout=subprocess.PIPE, stderr=subprocess.STDOUT).stdout)
+
     for pack in packages:
         for i in sys.argv:
             if i == "--buildonly":
