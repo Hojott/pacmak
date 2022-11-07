@@ -1,0 +1,13 @@
+-S{yyuuglxblt} xxxx:
+pacman -S{yyuuglxblt}p --print-format "%n" --noprogressbar --color never xxxx > txt
+for txt in txt:
+	git clone https://github.com/artixlinux/main/[txt]
+	asp [txt]
+	git clone https://aur.archlinux.org/[txt]
+	
+	cd txt
+	makepkg -sci
+
+-? / -Sp
+pacman -?
+
