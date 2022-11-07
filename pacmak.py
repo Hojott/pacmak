@@ -14,24 +14,28 @@ for i in sys.argv[1]:
 
 if printmode:
     pacman_command = ["pacman"]+sys.argv[1:]
-    print(subprocess.run(pacman_command, capture_output=True).stdout)
+    print(subprocess.run(pacman_command, stdout=subprocess.PIPE, stderr=subprocess.STDOUT).stdout)
 
 elif syncmode:
-    getpackages_command = ["pacman"] + sys.argv[1:] + ["--print", "--print-format", "%n", "--noprogressbar", "--noconfirm"]
-    stdout = subprocess.run(getpackages_command, capture_output=True).stdout
+    getpackages_command = ["sudo","pacman"] + sys.argv[1:] + ["--print", "--print-format", "%n", "--noprogressbar", "--noconfirm"]
+    stdout = subprocess.run(getpackages_command, stdout=subprocess.PIPE, stderr=subprocess.STDOUT).stdout
     packages = stdout.split()
     
     if artixmode:
         for pack in packages:
-            git_command = ["git", "clone", "https://github.com/artixlinux/main/"+pack+".git"]
-            print(subprocess.run(git_command, capture_output=True).stdout)
+            git_command = ["mkdir", pack, "&&", "cd", pack, "&&", "wget", "https://raw.githubusercontent.com/artix-linux/main/master/"+pack+"/trunk/PKGBUILD", "&&", "cd", ".."]
+            git_clone = subprocess.run(git_command, stdout=subprocess.PIPE, stderr=subprocess.STDOUT).stdout
+            print(git_clone)
+            if git_clone.returncode == 128:
+                asp_command = ["asp", "export", pack]
+                print(subprocess.run(asp_command, stdout=subprocess.PIPE, stderr=subprocess.STDOUT).stdout)
     else:
         asp_command = ["asp", "export"] + packages
-        print(subprocess.run(asp_command, capture_output=True).stdout)
+        print(subprocess.run(asp_command, stdout=subprocess.PIPE, stderr=subprocess.STDOUT).stdout)
     
     for pack in packages:
         make_command = ["cd", pack, "&&", "makepkg", "-sci"]
-        print(subprocess.run(make_command, capture_output=True).stdout)
+        print(subprocess.run(make_command, stdout=subprocess.PIPE, stderr=subprocess.STDOUT).stdout)
 
 else:
     pacman_command = ["pacman"]+sys.argv[1:]
